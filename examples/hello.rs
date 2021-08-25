@@ -173,9 +173,6 @@ enum Control {
     Monophonic(Option<NonZeroI8>),
     /// Set device to polyphonic mode
     Polyphonic,
-
-
-
     /// Undefined CC
     Undefined {
         /// Which undefined CC was used
@@ -294,7 +291,65 @@ enum Event {
         chan: u8,
         /// Which control change message.
         message: Control,
-    }
+    },
+    /// Patch Change
+    Instrument {
+        /// Channel 0-15
+        chan: u8,
+        /// Instrument Patch ID (`[0x00-0x7F, 0x00-0x7F]`)
+        patch: [i8; 2],
+    },
+    /// Channel Pressure
+    Pressure {
+        /// Channel 0-15
+        chan: u8,
+        /// Pressure parameter value 0-127.
+        value: i8,
+    },
+    /// Pitch-Bend
+    Bend {
+        /// Channel 0-15
+        chan: u8,
+        /// FIXME: what is LSB
+        lsb: i8,
+        /// FIXME: what is MSB
+        msb: i8,
+    },
+    /// System Message
+    System {
+        message: Message,
+    },
+}
+
+/// MIDI System Message
+#[derive(Debug, Clone, Copy)]
+enum Message {
+    /// Start System Exclusive Message
+    ExStart,
+    /// MIDI Time Code quarter frame
+    TimeCode,
+    /// Song position pointer
+    SongPosition,
+    /// Song selection
+    SongSelect,
+    /// Tune Request
+    TuneRequest,
+    /// End System Exclusive Message
+    ExEnd,
+    /// Timing Clock
+    TimingClock,
+    /// Start
+    Start,
+    /// Continue
+    Continue,
+    /// Stop
+    Stop,
+    /// Active Sensing
+    ActiveSensing,
+    /// Reset System
+    SystemReset,
+    /// Unknown System Message
+    Unknown(u8),
 }
 
 /// Encoded MIDI event (to be sent through flume channel).
@@ -359,22 +414,39 @@ impl From<Midi> for Event {
                 chan,
                 message: Control::new(id, value),
             },
-            
-            0xC0 => panic!("FIXME: Patch Change"),
-            0xD0 => panic!("FIXME: Channel Pressure"),
-            0xE0 => panic!("FIXME: Pitch Bend"),
-            0xF0 => panic!("FIXME: System Exclusive Message Start"),
-            0xF1 => panic!("FIXME: MIDI Timecode Quarter Frame"),
-            0xF2 => panic!("FIXME: Song Position Pointer"),
-            0xF3 => panic!("FIXME: Song Select"),
-            0xF6 => panic!("FIXME: Tune Request"),
-            0xF7 => panic!("FIXME: System Exclusive Message End"),
-            0xF8 => panic!("FIXME: Timing Clock"),
-            0xFA => panic!("FIXME: Start"),
-            0xFB => panic!("FIXME: Continue"),
-            0xFC => panic!("FIXME: Stop"),
-            0xFE => panic!("FIXME: Active Sensing"),
-            0xFF => panic!("FIXME: System Reset"),
+            0xC0 => Event::Instrument {
+                chan,
+                patch: [id, value],
+            },
+            0xD0 => Event::Pressure {
+                chan,
+                value: id,
+            },
+            0xE0 => Event::Bend {
+                chan,
+                lsb: id,
+                msb: value,
+            },
+            0xF0 => Event::System {
+                message: match chan {
+                    0x0 => Message::ExStart,
+                    0x1 => Message::TimeCode,
+                    0x2 => Message::SongPosition,
+                    0x3 => Message::SongSelect,
+                    // 0x4..=0x5 unknown
+                    0x6 => Message::TuneRequest,
+                    0x7 => Message::ExEnd,
+                    0x8 => Message::TimingClock,
+                    // 0x9 unknown
+                    0xA => Message::Start,
+                    0xB => Message::Continue,
+                    0xC => Message::Stop,
+                    // 0xD unknown
+                    0xE => Message::ActiveSensing,
+                    0xF => Message::SystemReset,
+                    _ => Message::Unknown(other.0[0]),
+                }
+            },
             a => { panic!("FIXME: Unknown MIDI event {:X}", a) },
         }
     }
