@@ -1,8 +1,33 @@
+# Copyright © 2021 The Dimi Crate Developers
+#
+# Licensed under any of:
+# - Apache License, Version 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+# - Boost Software License, Version 1.0 (https://www.boost.org/LICENSE_1_0.txt)
+# - MIT License (https://mit-license.org/)
+# At your option (See accompanying files LICENSE_APACHE_2_0.txt,
+# LICENSE_MIT.txt and LICENSE_BOOST_1_0.txt).  This file may not be copied,
+# modified, or distributed except according to those terms.
+
 [package]
 name = "dimi"
 version = "0.1.0"
 edition = "2018"
+license = "Apache-2.0 OR BSL-1.0 OR MIT"
+description = "Asynchronous library for interfacing with MIDI devices"
+repository = "https://github.com/libcala/dimi"
+documentation = "https://docs.rs/dimi"
+homepage = "https://github.com/libcala/dimi/blob/main/CHANGELOG.md"
+include = ["Cargo.toml", "src/*"]
+# TODO: eventually add no-std to category list
+categories = ["asynchronous", "hardware-support", "multimedia", "multimedia::audio"]
+keywords = ["audio", "realtime", "cross-platform", "midi", "record"]
+readme = "README.md"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+# Use Smelling Salts on Linux
+[target.'cfg(target_os="linux")'.dependencies.smelling_salts]
+version = "0.5"
 
-[dependencies]
+[dependencies.flume]
+version = "0.10"
+default-features = false
+features = ["async"]

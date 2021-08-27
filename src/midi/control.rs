@@ -2,60 +2,13 @@
 //
 // Licensed under any of:
 // - Apache License, Version 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
-// - MIT License (https://mit-license.org/)
 // - Boost Software License, Version 1.0 (https://www.boost.org/LICENSE_1_0.txt)
+// - MIT License (https://mit-license.org/)
 // At your option (See accompanying files LICENSE_APACHE_2_0.txt,
 // LICENSE_MIT.txt and LICENSE_BOOST_1_0.txt).  This file may not be copied,
 // modified, or distributed except according to those terms.
-//
-//! Type-safe MIDI event types.
 
 use core::num::NonZeroI8;
-use core::convert::TryFrom;
-
-/// A note and octave of the Western scale.
-///
-///  In this library, C4 is middle C and octaves range from -1 to 9
-#[derive(Debug, Copy, Clone)]
-pub enum Note {
-    C(i8),
-    Db(i8),
-    D(i8),
-    Eb(i8),
-    E(i8),
-    F(i8),
-    Gb(i8),
-    G(i8),
-    Ab(i8),
-    A(i8),
-    Bb(i8),
-    B(i8),
-}
-
-impl TryFrom<u8> for Note {
-    type Error = std::num::TryFromIntError;
-
-    fn try_from(note: u8) -> std::result::Result<Self, Self::Error> {
-        let note = i8::try_from(note)?;
-        let octave = note / 12;
-        let note = match note % 12 {
-            0 => Note::C,
-            1 => Note::Db,
-            2 => Note::D,
-            3 => Note::Eb,
-            4 => Note::E,
-            5 => Note::F,
-            6 => Note::Gb,
-            7 => Note::G,
-            8 => Note::Ab,
-            9 => Note::A,
-            10 => Note::Bb,
-            11 => Note::B,
-            _ => unreachable!(),
-        };
-        Ok(note(octave - 1))
-    }
-}
 
 /// A control change message for continuous controllers
 #[derive(Debug, Clone, Copy)]
@@ -193,7 +146,7 @@ pub enum Control {
 }
 
 impl Control {
-    fn new(which: i8, value: i8) -> Self {
+    pub(crate) fn new(which: i8, value: i8) -> Self {
         match which {
             0 => Control::Bank(value),
             1 => Control::Wheel(value),
@@ -263,101 +216,4 @@ impl Control {
             which => Control::Undefined { which, value },
         }
     }
-}
-
-/// A decoded MIDI Event
-#[derive(Debug, Clone, Copy)]
-pub enum Event {
-    /// Note stopped
-    NoteOff {
-        /// Channel 0-15
-        chan: u8,
-        /// Which note was stopped
-        note: Note,
-        /// Velocity of the note 0-127
-        value: i8,
-    },
-    /// Note playing
-    NoteOn {
-        /// Channel 0-15
-        chan: u8,
-        /// Which note was played
-        note: Note,
-        /// Velocity of the note 0-127
-        value: i8,
-    },
-    /// Note aftertouch parameter change
-    NoteTouch {
-        /// Channel 0-15
-        chan: u8,
-        /// Which note was played
-        note: Note,
-        /// Touch parameter value 0-127.
-        value: i8,
-    },
-    /// Control Change (Continous Controller)
-    Control {
-        /// Channel 0-15
-        chan: u8,
-        /// Which control change message.
-        message: Control,
-    },
-    /// Patch Change
-    Instrument {
-        /// Channel 0-15
-        chan: u8,
-        /// Instrument Patch ID (`[0x00-0x7F, 0x00-0x7F]`)
-        patch: [i8; 2],
-    },
-    /// Channel Pressure
-    Pressure {
-        /// Channel 0-15
-        chan: u8,
-        /// Pressure parameter value 0-127.
-        value: i8,
-    },
-    /// Pitch-Bend
-    Bend {
-        /// Channel 0-15
-        chan: u8,
-        /// FIXME: what is LSB
-        lsb: i8,
-        /// FIXME: what is MSB
-        msb: i8,
-    },
-    /// System Message
-    System {
-        message: Message,
-    },
-}
-
-/// MIDI System Message
-#[derive(Debug, Clone, Copy)]
-pub enum Message {
-    /// Start System Exclusive Message
-    ExStart,
-    /// MIDI Time Code quarter frame
-    TimeCode,
-    /// Song position pointer
-    SongPosition,
-    /// Song selection
-    SongSelect,
-    /// Tune Request
-    TuneRequest,
-    /// End System Exclusive Message
-    ExEnd,
-    /// Timing Clock
-    TimingClock,
-    /// Start
-    Start,
-    /// Continue
-    Continue,
-    /// Stop
-    Stop,
-    /// Active Sensing
-    ActiveSensing,
-    /// Reset System
-    SystemReset,
-    /// Unknown System Message
-    Unknown(u8),
 }
