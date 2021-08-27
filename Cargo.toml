@@ -31,3 +31,6 @@ version = "0.5"
 version = "0.10"
 default-features = false
 features = ["async"]
+
+[dev-dependencies.pasts]
+version = "0.8"
