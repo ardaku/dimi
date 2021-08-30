@@ -22,12 +22,6 @@ struct Instrument {
     device: RawDevice,
 }
 
-impl Drop for Instrument {
-    fn drop(&mut self) {
-        println!("TEST!");
-    }
-}
-
 pub(crate) fn connect(it: It) -> Option<Device<Midi>> {
     let file = it.file_open_r().ok()?;
     let device = file.as_raw_fd();
@@ -45,7 +39,7 @@ unsafe fn callback(inst: &mut Instrument) -> Option<()> {
     if should_discard {
         let _ = inst.sender.send(Midi([0xFF; 4]));
         super::platform().driver.discard(inst.device);
-        std::mem::drop(std::ptr::read(inst));
+        drop(std::ptr::read(inst));
         return None;
     }
     Some(())

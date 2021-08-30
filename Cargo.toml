@@ -28,7 +28,7 @@ readme = "README.md"
 version = "0.5"
 
 [target.'cfg(target_os="linux")'.dependencies.lookit]
-path = "../../ardaku/lookit"
+version = "0.1"
 
 [dependencies.flume]
 version = "0.10"
