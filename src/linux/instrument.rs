@@ -45,6 +45,7 @@ unsafe fn callback(inst: &mut Instrument) -> Option<()> {
     if should_discard {
         let _ = inst.sender.send(Midi([0xFF; 4]));
         super::platform().driver.discard(inst.device);
+        std::mem::drop(std::ptr::read(inst));
         return None;
     }
     Some(())
