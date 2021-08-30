@@ -12,12 +12,13 @@ struct App {
 
 impl App {
     fn connect(&mut self, instrument: Instrument) -> Poll<()> {
+        println!("New MIDI Instrument!");
         self.instruments.push(instrument);
         Pending
     }
 
     fn event(&mut self, which: usize, midi: Event) -> Poll<()> {
-        dbg!(which, midi);
+        println!("{}: {:?}", which, midi);
         Pending
     }
 

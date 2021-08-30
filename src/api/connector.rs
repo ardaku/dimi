@@ -35,13 +35,13 @@ impl Connector {
 impl Future for Connector {
     type Output = Instrument;
 
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        let a = Pin::new(&mut self.get_mut().0)
+    fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+        let a = Pin::new(&mut self.as_mut().0)
             .poll(cx)
             .map(Instrument::new);
         match a {
             Poll::Ready(Some(x)) => Poll::Ready(x),
-            Poll::Ready(None) => Poll::Pending,
+            Poll::Ready(None) => self.poll(cx),
             Poll::Pending => Poll::Pending,
         }
     }
