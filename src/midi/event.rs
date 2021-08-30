@@ -10,7 +10,7 @@
 //
 //! Type-safe MIDI event types.
 
-use crate::midi::{Message, Control, Note};
+use crate::midi::{Control, Message, Note};
 
 /// A decoded MIDI Event
 #[derive(Debug, Clone, Copy)]

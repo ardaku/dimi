@@ -9,20 +9,26 @@
 // modified, or distributed except according to those terms.
 
 use crate::Instrument;
-use crate::platform::{self, Device, Midi};
-use std::pin::Pin;
+use lookit::Lookit;
 use std::future::Future;
+use std::pin::Pin;
 use std::task::{Context, Poll};
 
 /// Future that you can `.await` to connect to MIDI
 /// [`Instrument`](crate::Instrument)s
 #[derive(Debug)]
-pub struct Connector(Device<Device<Midi>>);
+pub struct Connector(Lookit);
+
+impl Default for Connector {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl Connector {
     /// Create a new MIDI instrument connector
     pub fn new() -> Self {
-        Self(platform::connector())
+        Self(Lookit::with_midi())
     }
 }
 
@@ -30,6 +36,13 @@ impl Future for Connector {
     type Output = Instrument;
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        Pin::new(&mut self.get_mut().0).poll(cx).map(Instrument::new)
+        let a = Pin::new(&mut self.get_mut().0)
+            .poll(cx)
+            .map(Instrument::new);
+        match a {
+            Poll::Ready(Some(x)) => Poll::Ready(x),
+            Poll::Ready(None) => Poll::Pending,
+            Poll::Pending => Poll::Pending,
+        }
     }
 }

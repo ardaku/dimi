@@ -36,11 +36,13 @@ pub use api::*;
 
 // Platform-specific implementation
 mod platform {
+    #![allow(clippy::module_inception)]
+
     mod packet;
     mod platform;
 
     pub(crate) use packet::Midi;
-    pub(crate) use platform::{Device, connector};
+    pub(crate) use platform::{connect, Device};
 }
 
 // Public root-level API.
@@ -58,15 +60,15 @@ mod api {
 pub mod midi {
     //! Type-safe MIDI event types.
 
-    mod note;
-    mod message;
     mod control;
     mod event;
+    mod message;
+    mod note;
 
-    pub use note::Note;
-    pub use event::Event;
     pub use control::Control;
+    pub use event::Event;
     pub use message::Message;
+    pub use note::Note;
 }
 
 #[cfg(test)]

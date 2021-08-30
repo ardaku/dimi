@@ -9,9 +9,10 @@
 // modified, or distributed except according to those terms.
 
 use crate::midi::Event;
-use crate::platform::{Device, Midi};
-use std::pin::Pin;
+use crate::platform::{connect, Device, Midi};
+use lookit::It;
 use std::future::Future;
+use std::pin::Pin;
 use std::task::{Context, Poll};
 
 /// Future that you can `.await` to get MIDI [`Event`](crate::midi::Event)s
@@ -19,8 +20,8 @@ use std::task::{Context, Poll};
 pub struct Instrument(Device<Midi>);
 
 impl Instrument {
-    pub(crate) fn new(internal: Device<Midi>) -> Self {
-        Self(internal)
+    pub(crate) fn new(which: It) -> Option<Self> {
+        Some(Self(connect(which)?))
     }
 }
 

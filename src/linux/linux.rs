@@ -8,13 +8,13 @@
 // LICENSE_MIT.txt and LICENSE_BOOST_1_0.txt).  This file may not be copied,
 // modified, or distributed except according to those terms.
 
-mod connector;
+mod instrument;
 
 use smelling_salts::linux::Driver;
 use std::sync::Once;
 use std::mem::MaybeUninit;
 
-pub(crate) use connector::connector;
+pub(crate) use instrument::connect;
 pub(crate) use smelling_salts::linux::Device;
 
 struct Platform {

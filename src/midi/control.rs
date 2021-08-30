@@ -142,7 +142,7 @@ pub enum Control {
         which: i8,
         /// The value associated with the undefined CC
         value: i8,
-    }
+    },
 }
 
 impl Control {
@@ -168,7 +168,10 @@ impl Control {
             18 => Control::UserC(value),
             19 => Control::UserD(value),
             // 20..=31 undefined
-            32..=63 => Control::Lsb { which: which & 0x1F, value },
+            32..=63 => Control::Lsb {
+                which: which & 0x1F,
+                value,
+            },
             64 => Control::Damper(value >= 64),
             65 => Control::Bend(value >= 64),
             66 => Control::Sostenuto(value >= 64),

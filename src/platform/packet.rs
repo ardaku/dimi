@@ -10,7 +10,7 @@
 
 use std::convert::{TryFrom, TryInto};
 
-use crate::midi::{Event, Message, Control, Note};
+use crate::midi::{Control, Event, Message, Note};
 
 /// Encoded MIDI event (to be sent through flume channel).
 ///
@@ -27,21 +27,9 @@ impl From<Midi> for Event {
         let value = other.0[2].try_into().unwrap();
 
         match other.0[0] & 0xF0 {
-            0x80 => Event::NoteOff {
-                chan,
-                note,
-                value,
-            },
-            0x90 => Event::NoteOn {
-                chan,
-                note,
-                value,
-            },
-            0xA0 => Event::NoteTouch {
-                chan,
-                note,
-                value,
-            },
+            0x80 => Event::NoteOff { chan, note, value },
+            0x90 => Event::NoteOn { chan, note, value },
+            0xA0 => Event::NoteTouch { chan, note, value },
             0xB0 => Event::Control {
                 chan,
                 message: Control::new(id, value),
@@ -50,10 +38,7 @@ impl From<Midi> for Event {
                 chan,
                 patch: [id, value],
             },
-            0xD0 => Event::Pressure {
-                chan,
-                value: id,
-            },
+            0xD0 => Event::Pressure { chan, value: id },
             0xE0 => Event::Bend {
                 chan,
                 lsb: id,
@@ -77,9 +62,11 @@ impl From<Midi> for Event {
                     0xE => Message::ActiveSensing,
                     0xF => Message::SystemReset,
                     _ => Message::Unknown(other.0[0]),
-                }
+                },
             },
-            a => { panic!("FIXME: Unknown MIDI event {:X}", a) },
+            a => {
+                panic!("FIXME: Unknown MIDI event {:X}", a)
+            }
         }
     }
 }

@@ -10,6 +10,8 @@
 
 #![allow(unsafe_code, unused_attributes)]
 
+use lookit::It;
+
 // Choose platform driver implementation.
 #[cfg_attr(target_os = "linux", path = "../linux/linux.rs")]
 #[path = "unsupported.rs"]
@@ -19,6 +21,6 @@ mod driver;
 pub(crate) use driver::Device;
 
 // Single required method for each platform.
-pub(crate) fn connector() -> Device<Device<crate::platform::packet::Midi>> {
-    driver::connector()
+pub(crate) fn connect(it: It) -> Option<Device<crate::platform::packet::Midi>> {
+    driver::connect(it)
 }
