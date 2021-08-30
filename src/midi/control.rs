@@ -11,7 +11,7 @@
 use core::num::NonZeroI8;
 
 /// A control change message for continuous controllers
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Control {
     /// Bank select/change 0-127
     Bank(i8),

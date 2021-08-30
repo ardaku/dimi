@@ -43,6 +43,7 @@ unsafe fn callback(inst: &mut Instrument) -> Option<()> {
         Err(e) => e.kind() != ErrorKind::WouldBlock,
     };
     if should_discard {
+        let _ = inst.sender.send(Midi([0xFF; 4]));
         super::platform().driver.discard(inst.device);
         return None;
     }

@@ -13,7 +13,7 @@ use core::convert::TryFrom;
 /// A note and octave of the Western scale.
 ///
 ///  In this library, C4 is middle C and octaves range from -1 to 9
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum Note {
     /// The C Note in the Western Scale
     C(i8),

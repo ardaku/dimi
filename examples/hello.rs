@@ -12,13 +12,18 @@ struct App {
 
 impl App {
     fn connect(&mut self, instrument: Instrument) -> Poll<()> {
-        println!("New MIDI Instrument!");
+        println!("{}: Connected", self.instruments.len());
         self.instruments.push(instrument);
         Pending
     }
 
     fn event(&mut self, which: usize, midi: Event) -> Poll<()> {
-        println!("{}: {:?}", which, midi);
+        if midi == Event::Disconnect {
+            self.instruments.swap_remove(which);
+            println!("{}: Disconnected", which);
+        } else {
+            println!("{}: {:?}", which, midi);
+        }
         Pending
     }
 

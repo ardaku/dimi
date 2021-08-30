@@ -11,7 +11,7 @@
 //! Type-safe MIDI event types.
 
 /// MIDI System Message
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Message {
     /// Start System Exclusive Message
     ExStart,

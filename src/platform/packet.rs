@@ -21,6 +21,10 @@ pub(crate) struct Midi(pub(crate) [u8; 4]);
 
 impl From<Midi> for Event {
     fn from(other: Midi) -> Event {
+        if other.0 == [0xFF; 4] {
+            return Event::Disconnect;
+        }
+
         let chan = other.0[0] & 0x0F;
         let id = other.0[1].try_into().unwrap();
         let note = Note::try_from(other.0[1]).unwrap();
