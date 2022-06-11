@@ -17,7 +17,8 @@ fn main() {
     let target_arch = &env::var("CARGO_CFG_TARGET_ARCH").unwrap();
     let target_vendor = &env::var("CARGO_CFG_TARGET_VENDOR").unwrap();
     let target_env = &env::var("CARGO_CFG_TARGET_ENV").unwrap();
-    let unsupported = format!(
+    let unsupported =
+        format!(
         "Target environment {} ({}, {}, {}, {}, {}) not suppported, please \
         consider opening an issue at https://github.com/libcala/dimi/issues",
         target, target_family, target_os, target_arch, target_vendor, target_env

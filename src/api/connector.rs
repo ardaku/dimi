@@ -8,11 +8,15 @@
 // LICENSE_MIT.txt and LICENSE_BOOST_1_0.txt).  This file may not be copied,
 // modified, or distributed except according to those terms.
 
-use crate::Instrument;
+use std::{
+    future::Future,
+    pin::Pin,
+    task::{Context, Poll},
+};
+
 use lookit::Lookit;
-use std::future::Future;
-use std::pin::Pin;
-use std::task::{Context, Poll};
+
+use crate::Instrument;
 
 /// Future that you can `.await` to connect to MIDI
 /// [`Instrument`](crate::Instrument)s
@@ -35,10 +39,11 @@ impl Connector {
 impl Future for Connector {
     type Output = Instrument;
 
-    fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        let a = Pin::new(&mut self.as_mut().0)
-            .poll(cx)
-            .map(Instrument::new);
+    fn poll(
+        mut self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+    ) -> Poll<Self::Output> {
+        let a = Pin::new(&mut self.as_mut().0).poll(cx).map(Instrument::new);
         match a {
             Poll::Ready(Some(x)) => Poll::Ready(x),
             Poll::Ready(None) => self.poll(cx),

@@ -8,12 +8,18 @@
 // LICENSE_MIT.txt and LICENSE_BOOST_1_0.txt).  This file may not be copied,
 // modified, or distributed except according to those terms.
 
-use crate::midi::Event;
-use crate::platform::{connect, Device, Midi};
+use std::{
+    future::Future,
+    pin::Pin,
+    task::{Context, Poll},
+};
+
 use lookit::It;
-use std::future::Future;
-use std::pin::Pin;
-use std::task::{Context, Poll};
+
+use crate::{
+    midi::Event,
+    platform::{connect, Device, Midi},
+};
 
 /// Future that you can `.await` to get MIDI [`Event`](crate::midi::Event)s
 #[derive(Debug)]

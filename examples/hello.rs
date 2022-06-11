@@ -1,7 +1,7 @@
-use dimi::midi::Event;
-use dimi::{Connector, Instrument};
-use pasts::Loop;
 use std::task::Poll::{self, Pending};
+
+use dimi::{midi::Event, Connector, Instrument};
+use pasts::Loop;
 
 struct App {
     // MIDI instrument connector
