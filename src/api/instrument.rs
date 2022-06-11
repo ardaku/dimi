@@ -16,7 +16,7 @@ use crate::{
     platform::{connect, Device, Midi},
 };
 
-/// Future that you can `.await` to get MIDI [`Event`](crate::midi::Event)s
+/// [`Notifier`] for when MIDI [`Event`](crate::midi::Event)s are generated.
 #[derive(Debug)]
 pub struct Instrument(Device<Midi>);
 

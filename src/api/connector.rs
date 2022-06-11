@@ -13,8 +13,7 @@ use pasts::prelude::*;
 
 use crate::Instrument;
 
-/// Future that you can `.await` to connect to MIDI
-/// [`Instrument`](crate::Instrument)s
+/// [`Notifier`] for when MIDI [`Instrument`](crate::Instrument)s are connected.
 #[derive(Debug)]
 pub struct Connector(Lookit);
 
