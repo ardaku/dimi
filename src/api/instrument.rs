@@ -8,13 +8,8 @@
 // LICENSE_MIT.txt and LICENSE_BOOST_1_0.txt).  This file may not be copied,
 // modified, or distributed except according to those terms.
 
-use std::{
-    future::Future,
-    pin::Pin,
-    task::{Context, Poll},
-};
-
 use lookit::It;
+use pasts::prelude::*;
 
 use crate::{
     midi::Event,
@@ -31,10 +26,13 @@ impl Instrument {
     }
 }
 
-impl Future for Instrument {
-    type Output = Event;
+impl Notifier for Instrument {
+    type Event = Event;
 
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        Pin::new(&mut self.get_mut().0).poll(cx).map(Event::from)
+    fn poll_next(
+        self: Pin<&mut Self>,
+        exec: &mut Exec<'_>,
+    ) -> Poll<Self::Event> {
+        Pin::new(&mut self.get_mut().0).poll(exec).map(Event::from)
     }
 }

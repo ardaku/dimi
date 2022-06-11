@@ -1,7 +1,5 @@
-use std::task::Poll::{self, Pending};
-
 use dimi::{midi::Event, Connector, Instrument};
-use pasts::Loop;
+use pasts::{prelude::*, Join};
 
 struct App {
     // MIDI instrument connector
@@ -17,7 +15,7 @@ impl App {
         Pending
     }
 
-    fn event(&mut self, which: usize, midi: Event) -> Poll<()> {
+    fn event(&mut self, (which, midi): (usize, Event)) -> Poll<()> {
         if midi == Event::Disconnect {
             self.instruments.swap_remove(which);
             println!("{}: Disconnected", which);
@@ -33,13 +31,13 @@ impl App {
             instruments: Vec::new(),
         };
 
-        Loop::new(&mut app)
-            .when(|a| &mut a.connector, Self::connect)
-            .poll(|a| &mut a.instruments, Self::event)
+        Join::new(&mut app)
+            .on(|a| &mut a.connector, Self::connect)
+            .on(|a| a.instruments.as_mut_slice(), Self::event)
             .await
     }
 }
 
 fn main() {
-    pasts::block_on(App::run())
+    pasts::Executor::default().spawn(Box::pin(App::run()))
 }

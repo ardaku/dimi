@@ -8,13 +8,8 @@
 // LICENSE_MIT.txt and LICENSE_BOOST_1_0.txt).  This file may not be copied,
 // modified, or distributed except according to those terms.
 
-use std::{
-    future::Future,
-    pin::Pin,
-    task::{Context, Poll},
-};
-
 use lookit::Lookit;
+use pasts::prelude::*;
 
 use crate::Instrument;
 
@@ -36,18 +31,20 @@ impl Connector {
     }
 }
 
-impl Future for Connector {
-    type Output = Instrument;
+impl Notifier for Connector {
+    type Event = Instrument;
 
-    fn poll(
+    fn poll_next(
         mut self: Pin<&mut Self>,
-        cx: &mut Context<'_>,
-    ) -> Poll<Self::Output> {
-        let a = Pin::new(&mut self.as_mut().0).poll(cx).map(Instrument::new);
+        exec: &mut Exec<'_>,
+    ) -> Poll<Self::Event> {
+        let a = Pin::new(&mut self.as_mut().0)
+            .poll(exec)
+            .map(Instrument::new);
         match a {
-            Poll::Ready(Some(x)) => Poll::Ready(x),
-            Poll::Ready(None) => self.poll(cx),
-            Poll::Pending => Poll::Pending,
+            Ready(Some(x)) => Ready(x),
+            Ready(None) => self.poll_next(exec),
+            Pending => Pending,
         }
     }
 }

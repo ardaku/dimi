@@ -23,6 +23,9 @@ categories = ["asynchronous", "hardware-support", "multimedia", "multimedia::aud
 keywords = ["audio", "realtime", "cross-platform", "midi", "record"]
 readme = "README.md"
 
+[dependencies.pasts]
+version = "0.11"
+
 # Use Smelling Salts on Linux
 [target.'cfg(target_os="linux")'.dependencies.smelling_salts]
 version = "0.5"
@@ -34,6 +37,3 @@ version = "0.1"
 version = "0.10"
 default-features = false
 features = ["async"]
-
-[dev-dependencies.pasts]
-version = "0.8"
