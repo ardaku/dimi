@@ -19,10 +19,10 @@ use crate::midi::{Control, Event, Message, Note};
 #[repr(transparent)]
 pub(crate) struct Midi(pub(crate) [u8; 4]);
 
-impl From<Midi> for Event {
-    fn from(other: Midi) -> Event {
+impl From<Midi> for Option<Event> {
+    fn from(other: Midi) -> Self {
         if other.0 == [0xFF; 4] {
-            return Event::Disconnect;
+            return None;
         }
 
         let chan = other.0[0] & 0x0F;
@@ -30,7 +30,7 @@ impl From<Midi> for Event {
         let note = Note::try_from(other.0[1]).unwrap();
         let value = other.0[2].try_into().unwrap();
 
-        match other.0[0] & 0xF0 {
+        let event = match other.0[0] & 0xF0 {
             0x80 => Event::NoteOff { chan, note, value },
             0x90 => Event::NoteOn { chan, note, value },
             0xA0 => Event::NoteTouch { chan, note, value },
@@ -71,6 +71,8 @@ impl From<Midi> for Event {
             a => {
                 panic!("FIXME: Unknown MIDI event {:X}", a)
             }
-        }
+        };
+
+        Some(event)
     }
 }

@@ -27,12 +27,12 @@ impl Instrument {
 }
 
 impl Notifier for Instrument {
-    type Event = Event;
+    type Event = Option<Event>;
 
     fn poll_next(
         self: Pin<&mut Self>,
         exec: &mut Exec<'_>,
     ) -> Poll<Self::Event> {
-        Pin::new(&mut self.get_mut().0).poll(exec).map(Event::from)
+        Pin::new(&mut self.get_mut().0).poll(exec).map(Midi::into)
     }
 }

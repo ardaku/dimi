@@ -15,13 +15,18 @@ impl App {
         Pending
     }
 
-    fn event(&mut self, (which, midi): (usize, Event)) -> Poll<()> {
-        if midi == Event::Disconnect {
-            self.instruments.swap_remove(which);
-            println!("{}: Disconnected", which);
-        } else {
-            println!("{}: {:?}", which, midi);
-        }
+    fn event(&mut self, (which, midi): (usize, Option<Event>)) -> Poll<()> {
+        let midi = match midi {
+            Some(midi) => midi,
+            None => {
+                self.instruments.swap_remove(which);
+                println!("{}: Disconnected", which);
+                return Pending;
+            }
+        };
+
+        println!("{}: {:?}", which, midi);
+
         Pending
     }
 

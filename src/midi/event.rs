@@ -15,8 +15,6 @@ use crate::midi::{Control, Message, Note};
 /// A decoded MIDI Event
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Event {
-    /// MIDI instrument was disconnected.
-    Disconnect,
     /// Note stopped
     NoteOff {
         /// Channel 0-15
