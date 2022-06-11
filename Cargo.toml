@@ -11,7 +11,7 @@
 [package]
 name = "dimi"
 version = "0.1.0"
-edition = "2018"
+edition = "2021"
 license = "Apache-2.0 OR BSL-1.0 OR MIT"
 description = "Asynchronous library for interfacing with MIDI devices"
 repository = "https://github.com/libcala/dimi"
