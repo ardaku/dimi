@@ -47,8 +47,6 @@ mod platform {
 
 // Public root-level API.
 mod api {
-    #![allow(unreachable_pub)] // Rust bug, actually is reachable
-
     mod connector;
     mod instrument;
 
@@ -79,7 +77,8 @@ mod tests {
 
     #[test]
     fn require_send_sync() {
-        // Guarantee all exported futures are Send + Sync
+        // Guarantee all exported `Notifiers` are `Send` + `Sync`
         test_send_sync::<Connector>();
+        test_send_sync::<Instrument>();
     }
 }
