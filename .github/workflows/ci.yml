@@ -10,7 +10,6 @@ jobs:
         tc: [1.65.0, stable, beta, nightly]
         ar:
         - --all --no-default-features
-        - --all --features=epoll
     steps:
     - uses: actions/checkout@v2
     - uses: actions-rs/toolchain@v1
