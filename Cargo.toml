@@ -28,7 +28,7 @@ version = "0.11"
 
 # Use Smelling Salts on Linux
 [target.'cfg(target_os="linux")'.dependencies.smelling_salts]
-version = "0.5"
+version = "0.9"
 
 [target.'cfg(target_os="linux")'.dependencies.lookit]
 version = "0.1"
