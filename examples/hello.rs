@@ -15,17 +15,14 @@ impl App {
         Pending
     }
 
-    fn event(&mut self, (which, midi): (usize, Option<Event>)) -> Poll<()> {
-        let midi = match midi {
-            Some(midi) => midi,
+    fn midi(&mut self, (which, midi): (usize, Option<Event>)) -> Poll<()> {
+        match midi {
+            Some(midi) => println!("{}: {:?}", which, midi),
             None => {
                 self.instruments.swap_remove(which);
                 println!("{}: Disconnected", which);
-                return Pending;
             }
         };
-
-        println!("{}: {:?}", which, midi);
 
         Pending
     }
@@ -38,7 +35,7 @@ impl App {
 
         Join::new(&mut app)
             .on(|a| &mut a.connector, Self::connect)
-            .on(|a| a.instruments.as_mut_slice(), Self::event)
+            .on(|a| a.instruments.as_mut_slice(), Self::midi)
             .await
     }
 }
