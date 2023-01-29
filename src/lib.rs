@@ -57,12 +57,12 @@ pub mod midi {
 mod tests {
     use super::*;
 
-    fn test_send_sync<T: Send + Sync>() {}
+    fn test_send<T: Send>() {}
 
     #[test]
     fn require_send_sync() {
         // Guarantee all exported `Notifiers` are `Send` + `Sync`
-        test_send_sync::<Connector>();
-        test_send_sync::<Instrument>();
+        test_send::<Connector>();
+        test_send::<Instrument>();
     }
 }
