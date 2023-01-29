@@ -1,6 +1,6 @@
 [package]
 name = "dimi"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "Apache-2.0 OR BSL-1.0 OR MIT"
 description = "Asynchronous library for interfacing with MIDI devices"
@@ -12,18 +12,17 @@ include = ["Cargo.toml", "src/*"]
 categories = ["asynchronous", "hardware-support", "multimedia", "multimedia::audio"]
 keywords = ["audio", "realtime", "cross-platform", "midi", "record"]
 readme = "README.md"
+rust-version = "1.66"
 
 [dependencies.pasts]
+version = "0.13"
+
+[dependencies.smelling_salts]
 version = "0.11"
 
-# Use Smelling Salts on Linux
-[target.'cfg(target_os="linux")'.dependencies.smelling_salts]
-version = "0.5"
+[dependencies.lookit]
+version = "0.2"
 
-[target.'cfg(target_os="linux")'.dependencies.lookit]
-version = "0.1"
-
-[dependencies.flume]
-version = "0.10"
-default-features = false
-features = ["async"]
+[dev-dependencies.async_main]
+version = "0.2"
+features = ["pasts"]

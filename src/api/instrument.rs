@@ -1,18 +1,16 @@
-use lookit::It;
+use lookit::Found;
 use pasts::prelude::*;
 
-use crate::{
-    midi::Event,
-    platform::{connect, Device, Midi},
-};
+use crate::{instrument::Instrument as Inst, midi::Event, parse::Midi};
 
 /// [`Notifier`] for when MIDI [`Event`](crate::midi::Event)s are generated.
 #[derive(Debug)]
-pub struct Instrument(Device<Midi>);
+pub struct Instrument(Inst);
 
 impl Instrument {
-    pub(crate) fn new(which: It) -> Option<Self> {
-        Some(Self(connect(which)?))
+    pub(crate) fn new(found: Found) -> Option<Self> {
+        let device = found.connect_input().ok()?;
+        Some(Self(Inst::new(device)))
     }
 }
 
@@ -21,8 +19,10 @@ impl Notifier for Instrument {
 
     fn poll_next(
         self: Pin<&mut Self>,
-        exec: &mut Exec<'_>,
+        task: &mut Task<'_>,
     ) -> Poll<Self::Event> {
-        Pin::new(&mut self.get_mut().0).poll(exec).map(Midi::into)
+        Pin::new(&mut self.get_mut().0)
+            .poll_next(task)
+            .map(Midi::into)
     }
 }

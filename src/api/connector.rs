@@ -1,11 +1,11 @@
-use lookit::Lookit;
+use lookit::Searcher;
 use pasts::prelude::*;
 
 use crate::Instrument;
 
 /// [`Notifier`] for when MIDI [`Instrument`](crate::Instrument)s are connected.
 #[derive(Debug)]
-pub struct Connector(Lookit);
+pub struct Connector(Searcher);
 
 impl Default for Connector {
     fn default() -> Self {
@@ -16,7 +16,7 @@ impl Default for Connector {
 impl Connector {
     /// Create a new MIDI instrument connector
     pub fn new() -> Self {
-        Self(Lookit::with_midi())
+        Self(Searcher::with_midi())
     }
 }
 
@@ -25,15 +25,15 @@ impl Notifier for Connector {
 
     fn poll_next(
         mut self: Pin<&mut Self>,
-        exec: &mut Exec<'_>,
+        task: &mut Task<'_>,
     ) -> Poll<Self::Event> {
-        let a = Pin::new(&mut self.as_mut().0)
-            .poll(exec)
-            .map(Instrument::new);
-        match a {
-            Ready(Some(x)) => Ready(x),
-            Ready(None) => self.poll_next(exec),
-            Pending => Pending,
+        while let Ready(inst) =
+            Pin::new(&mut self.0).poll_next(task).map(Instrument::new)
+        {
+            let Some(inst) = inst else { continue };
+            return Ready(inst);
         }
+
+        Pending
     }
 }

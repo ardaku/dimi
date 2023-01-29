@@ -56,9 +56,7 @@ impl From<Midi> for Option<Event> {
                     _ => Message::Unknown(other.0[0]),
                 },
             },
-            a => {
-                panic!("FIXME: Unknown MIDI event {:X}", a)
-            }
+            e => panic!("FIXME: Unknown MIDI event {e:X}"),
         };
 
         Some(event)

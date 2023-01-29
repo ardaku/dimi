@@ -24,16 +24,10 @@
 
 pub use api::*;
 
-// Platform-specific implementation
-mod platform {
-    #![allow(clippy::module_inception)]
-
-    mod packet;
-    mod platform;
-
-    pub(crate) use packet::Midi;
-    pub(crate) use platform::{connect, Device};
-}
+// For parsing raw MIDI stream bytes
+mod parse;
+// For parsing raw MIDI stream into byte chunks
+mod instrument;
 
 // Public root-level API.
 mod api {
