@@ -15,7 +15,7 @@ readme = "README.md"
 rust-version = "1.66"
 
 [dependencies.pasts]
-version = "0.13"
+version = "0.14"
 
 [dependencies.smelling_salts]
 version = "0.11"
