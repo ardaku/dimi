@@ -3,7 +3,7 @@ use pasts::prelude::*;
 
 use crate::{instrument::Instrument as Inst, midi::Event, parse::Midi};
 
-/// [`Notifier`] for when MIDI [`Event`](crate::midi::Event)s are generated.
+/// [`Notify`] for when MIDI [`Event`](crate::midi::Event)s are generated.
 #[derive(Debug)]
 pub struct Instrument(Inst);
 
@@ -14,7 +14,7 @@ impl Instrument {
     }
 }
 
-impl Notifier for Instrument {
+impl Notify for Instrument {
     type Event = Option<Event>;
 
     fn poll_next(

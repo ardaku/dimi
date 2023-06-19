@@ -1,6 +1,6 @@
-use async_main::async_main;
+use async_main::{async_main, Spawn};
 use dimi::{midi::Event, Connector, Instrument};
-use pasts::{prelude::*, Join};
+use pasts::{prelude::*, Loop};
 
 struct App {
     // MIDI instrument connector
@@ -36,8 +36,8 @@ async fn main(_spawner: impl Spawn) {
         instruments: Vec::new(),
     };
 
-    Join::new(&mut app)
+    Loop::new(&mut app)
         .on(|a| &mut a.connector, App::connect)
         .on(|a| &mut a.instruments[..], App::midi)
-        .await
+        .await;
 }

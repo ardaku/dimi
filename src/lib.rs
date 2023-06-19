@@ -60,8 +60,8 @@ mod tests {
     fn test_send<T: Send>() {}
 
     #[test]
-    fn require_send_sync() {
-        // Guarantee all exported `Notifiers` are `Send` + `Sync`
+    fn require_send() {
+        // Guarantee all exported `Notify`s are `Send`
         test_send::<Connector>();
         test_send::<Instrument>();
     }

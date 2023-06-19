@@ -14,7 +14,7 @@ impl Instrument {
     }
 }
 
-impl Notifier for Instrument {
+impl Notify for Instrument {
     type Event = Midi;
 
     fn poll_next(mut self: Pin<&mut Self>, task: &mut Task<'_>) -> Poll<Midi> {

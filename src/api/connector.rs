@@ -3,7 +3,7 @@ use pasts::prelude::*;
 
 use crate::Instrument;
 
-/// [`Notifier`] for when MIDI [`Instrument`](crate::Instrument)s are connected.
+/// [`Notify`] for when MIDI [`Instrument`](crate::Instrument)s are connected.
 #[derive(Debug)]
 pub struct Connector(Searcher);
 
@@ -20,7 +20,7 @@ impl Connector {
     }
 }
 
-impl Notifier for Connector {
+impl Notify for Connector {
     type Event = Instrument;
 
     fn poll_next(
